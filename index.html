@@ -30,7 +30,7 @@
       align-items: center;
       margin-bottom: 18px;
     }
-    input, select, button {
+    input, select, button, textarea {
       padding: 8px 12px;
       font-size: 15px;
       border-radius: 8px;
@@ -38,8 +38,18 @@
       outline: none;
       transition: border-color .2s;
     }
-    input:focus, select:focus {
+    input:focus, select:focus, textarea:focus {
       border-color: #114488;
+    }
+    textarea {
+      min-width: 220px;
+      width: 280px;
+      min-height: 54px;
+      max-width: 360px;
+      resize: vertical;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin-top: 4px;
+      margin-bottom: 4px;
     }
     button {
       background: #114488;
@@ -57,26 +67,61 @@
       margin-top: 28px;
     }
     .spiel-card {
-      background: linear-gradient(90deg,#e8f0fe 18%,#eaefff 100%);
       border-radius: 12px;
-      margin-bottom: 16px;
-      padding: 14px 18px;
+      margin-bottom: 18px;
+      padding: 14px 20px 18px 20px;
       box-shadow: 0 2px 8px rgba(30, 50, 70, .03);
       display: flex;
       flex-direction: column;
       transition: box-shadow .2s;
       position: relative;
+      background: #fff;
+      border: 2px solid #f0f0f0;
+    }
+    .spiel-card.type-karten {
+      background: linear-gradient(90deg,#fce4ec 40%,#f8bbd0 100%);
+      border-color: #f8bbd0;
+    }
+    .spiel-card.type-wuerfel {
+      background: linear-gradient(90deg,#e3f2fd 40%,#90caf9 100%);
+      border-color: #90caf9;
+    }
+    .spiel-card.type-brett {
+      background: linear-gradient(90deg,#e8f5e9 40%,#a5d6a7 100%);
+      border-color: #a5d6a7;
+    }
+    .spiel-card.type-sonstiges {
+      background: linear-gradient(90deg,#fff3e0 40%,#ffcc80 100%);
+      border-color: #ffcc80;
     }
     .spiel-card:hover {
-      box-shadow: 0 4px 20px rgba(30,50,100,.11);
+      box-shadow: 0 4px 20px rgba(30,50,100,.12);
     }
     .spiel-title {
-      font-size: 18px;
+      font-size: 19px;
       color: #134070;
       font-weight: 600;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
       letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
+    .spiel-type {
+      font-size: 13px;
+      border-radius: 7px;
+      padding: 2.5px 11px;
+      font-weight: 500;
+      margin-left: 5px;
+      transition: background 0.2s, color 0.2s;
+      display: inline-block;
+      background: #ccd7ed;
+      color: #1d3050;
+    }
+    .type-karten    .spiel-type { background: #f8bbd0; color: #ad1457; }
+    .type-wuerfel   .spiel-type { background: #90caf9; color: #1976d2; }
+    .type-brett     .spiel-type { background: #a5d6a7; color: #388e3c; }
+    .type-sonstiges .spiel-type { background: #ffcc80; color: #f57c00; }
     .spiel-details {
       color: #444;
       font-size: 14.5px;
@@ -86,18 +131,30 @@
       flex-wrap: wrap;
       margin-bottom: 8px;
     }
-    .spiel-type {
-      background: #ccd7ed;
-      color: #1d3050;
+    .spiel-description {
+      font-size: 15px;
+      color: #203040;
+      background: #f3f5fb;
+      border-radius: 8px;
+      border-left: 5px solid #ccd7ed;
+      padding: 10px 18px;
+      margin: 8px 0 0 0;
+      box-shadow: 0 1px 4px rgba(80,90,130,.10);
+      white-space: pre-line;
+      line-height: 1.5;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .category-info {
       font-size: 13px;
-      border-radius: 7px;
-      padding: 2.5px 11px;
-      font-weight: 500;
-      margin-left: 5px;
+      color: #555;
+      margin-left: 6px;
+      font-style: italic;
+      flex: 1 0 100%;
     }
     .btn-group {
       display: flex;
       gap: 8px;
+      margin-top: 10px;
     }
     .btn-edit, .btn-delete {
       background: #114488;
@@ -118,6 +175,8 @@
     @media (max-width: 700px) {
       .container { padding: 18px 4px; }
       .form-row, .filter, .io-row { flex-direction: column; gap: 6px; }
+      .spiel-description { max-width: 100%; }
+      textarea { width: 95%; min-width: 120px; }
     }
     .io-row input[type="file"] {
       background: #f6f6fa;
@@ -136,15 +195,16 @@
       <input id="minspieler" type="number" min="1" placeholder="Min. Spieler">
       <input id="maxspieler" type="number" min="1" placeholder="Max. Spieler">
       <input id="dauer" type="number" min="1" placeholder="Dauer (Minuten)">
-      <select id="typ">
+      <select id="typ" onchange="zeigeKategorieBeschreibung()">
         <option value="Karten">Karten</option>
         <option value="Würfel">Würfel</option>
         <option value="Brett">Brett</option>
         <option value="Sonstiges">Sonstiges</option>
       </select>
+      <span id="categoryDesc" class="category-info"></span>
+      <textarea id="beschreibung" placeholder="Spielbeschreibung"></textarea>
       <button id="actionButton" onclick="spielHinzufuegen()">Spiel hinzufügen</button>
     </div>
-
     <div class="filter">
       <label>Filter:</label>
       <input id="filterMinspieler" type="number" min="1" placeholder="Min. Spieler">
@@ -161,18 +221,90 @@
       <button onclick="listeFiltern()">Filtern</button>
       <button onclick="resetFilter()">Zurücksetzen</button>
     </div>
-
     <div class="io-row">
       <button onclick="exportCSV()">Liste als CSV exportieren</button>
       <input type="file" id="csvImport" accept=".csv" onchange="importCSV(event)">
     </div>
-
     <div class="spielliste" id="spielliste"></div>
   </div>
-
   <script>
     let spiele = [];
     let aktuellBearbeitenIndex = null;
+
+    const kategorien = {
+      "Karten": "Spiele, in denen Karten die Hauptelemente sind – z. B. Uno, Bang, Munchkin.",
+      "Würfel": "Würfelspiele setzen auf Glück und Zahlen, wie Schweinerei oder Würfelpoker.",
+      "Brett": "Klassische Brett- und Familienspiele – z. B. Catan, Risiko, Activity.",
+      "Sonstiges": "Alles, was nicht passt: Partyspiele, Denkspiele oder besondere Varianten."
+    };
+
+    const defaultCSV = `Spielname,Min. Spieler,Max. Spieler,Dauer,Typ,Beschreibung
+"Schweinerei",1,30,15,"Würfel","Schweinchen werden geworfen, je nach Lage Punkte."
+"Catan",3,6,75,"Brett","Handels- und Strategiespiel mit Siedeln und Würfeln."
+"Risiko",2,5,60,"Brett","Welteroberung per Würfel und Strategie."
+"Monopoly",2,6,60,"Brett","Kauf und Verkauf von Straßen, Ziel: Monopol."
+"Scrabble",2,4,45,"Brett","Wörter legen auf Feldern, Punkte je Buchstabe."
+"Würfelpoker",1,30,15,"Würfel","Mit fünf Würfeln möglichst hohe Poker-Kombis werfen."
+"Zug um Zug",2,5,60,"Brett","Strecken bauen durch Karten, große Züge gewinnen."
+"Zooloretto",2,5,45,"Brett","Tiere mit Plättchen sammeln und in Gehege unterbringen."
+"Ubongo",2,4,25,"Brett","Geschicklichkeitspuzzle mit Einzelteilen."
+"Calavera",2,4,20,"Karten","Würfeleinträge in Totenkopf-Tabellen, Glück und Taktik."
+"Codenames",4,8,15,"Sonstiges","Begriffe erraten und Hinweise geben im Team."
+"Rumikub",2,4,20,"Sonstiges","Zahlensteine clever kombinieren und anlegen."
+"Activity",3,16,60,"Brett","Pantomime, Malen und Erklären, möglichst vielseitig."
+"Stratego",2,2,45,"Brett","Taktisches Kampfspiel um Flaggen und Ränge."
+"Exploding Cittens",2,5,15,"Karten","Knallige Karten und Glück – keine explodieren!"
+"Bang",4,7,30,"Karten","Wilder Westen mit Rollen, Karten und Schüssen."
+"Munchkin",3,6,80,"Karten","Humorvolles Rollenspiel mit Karten und Fallen."
+"Jenga",1,30,15,"Sonstiges","Stapelspiel mit Holzsteinen – wer lässt es kippen?"
+"Smart10",2,8,20,"Sonstiges","Quizspiel mit Fragen aus allen Wissensbereichen."
+"Wer bin ich",2,6,30,"Sonstiges","Rate wer du bist durch Fragen und Hinweise."
+"Trivial Pursuit",2,36,60,"Brett","Klassisches Quiz mit sechs Wissenskategorien."
+"Dixit",3,6,30,"Brett","Assoziative Bildkarten, Fantasie und Erzählungen."
+"Hitstar Bingo",2,12,30,"Karten","Musikbingo – erkenne Songs und streiche Felder."
+"Hitstar",2,10,30,"Karten","Musikratespiel – Songtitel durch Hinweise erraten."
+"What do you Meme",3,20,30,"Karten","Lustige Meme-Bilder mit passenden Texten kombinieren."
+"Arschlochkind",3,6,60,"Karten","Kartenspiel – Reihenfolge und Rollen nach Punkten."
+"11 Raus",2,6,20,"Karten","Zahlenkarten ablegen und als Erster fertig werden."
+"Karawanen",1,4,60,"Karten","Taktikspiel mit Karawagen-Bewegungen und Zahlen."
+"Wizzard",3,6,45,"Karten","Vorhersagen, Karten klug ausspielen und punkten."
+"Werwolf",8,18,30,"Karten","Diskussionsspiel, Wer ist der Werwolf?"
+"Uno",2,10,15,"Karten","Beliebtes Familien-Kartenspiel, Farben & Zahlen."
+"Uno Flip",2,10,15,"Karten","UNO mit beidseitigen Karten und mehr Action."
+"Uno Würfel",2,4,15,"Würfel","UNO-Würfelvariante – schnell würfeln und ablegen."
+"The Mind",2,4,20,"Karten","Gemeinsam Reihen legen, ohne zu sprechen."
+"Arschmellow",2,6,45,"Karten","Kartenspiel – grober Humor, besondere Regeln."
+"Schiffe Versenken",2,2,15,"Sonstiges","Flotten platzieren und abwechselnd beschießen."`;
+
+    function zeigeKategorieBeschreibung() {
+      const typ = document.getElementById('typ').value;
+      document.getElementById('categoryDesc').textContent = kategorien[typ] || "";
+    }
+
+    window.onload = function() {
+      ladeSpieleAusCSV(defaultCSV);
+      zeigeKategorieBeschreibung();
+    };
+
+    function ladeSpieleAusCSV(csvText) {
+      const lines = csvText.trim().split('\n').slice(1);
+      const imported = [];
+      lines.forEach(line => {
+        const parts = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+        if (parts && parts.length >= 6) {
+          imported.push({
+            name: parts[0].replace(/"/g,""),
+            minspieler: parseInt(parts[1]),
+            maxspieler: parseInt(parts[2]),
+            dauer: parseInt(parts[3]),
+            typ: parts[4].replace(/"/g,""),
+            beschreibung: parts[5].replace(/"/g,"")
+          });
+        }
+      });
+      spiele = imported;
+      spiellisteAnzeigen(spiele);
+    }
 
     function spielHinzufuegen() {
       const name = document.getElementById('name').value.trim();
@@ -180,17 +312,17 @@
       const maxspieler = parseInt(document.getElementById('maxspieler').value);
       const dauer = parseInt(document.getElementById('dauer').value);
       const typ = document.getElementById('typ').value;
+      const beschreibung = document.getElementById('beschreibung').value.trim();
 
-      if (!name || isNaN(minspieler) || isNaN(maxspieler) || isNaN(dauer)) {
-        alert('Bitte alle Felder ausfüllen.');
+      if (!name || isNaN(minspieler) || isNaN(maxspieler) || isNaN(dauer) || !beschreibung) {
+        alert('Bitte alle Felder inkl. Beschreibung ausfüllen.');
         return;
       }
 
       if (aktuellBearbeitenIndex === null) {
-        spiele.push({ name, minspieler, maxspieler, dauer, typ });
+        spiele.push({ name, minspieler, maxspieler, dauer, typ, beschreibung });
       } else {
-        // Bearbeiten
-        spiele[aktuellBearbeitenIndex] = { name, minspieler, maxspieler, dauer, typ };
+        spiele[aktuellBearbeitenIndex] = { name, minspieler, maxspieler, dauer, typ, beschreibung };
         aktuellBearbeitenIndex = null;
         document.getElementById('actionButton').textContent = "Spiel hinzufügen";
       }
@@ -204,6 +336,18 @@
       document.getElementById('maxspieler').value = "";
       document.getElementById('dauer').value = "";
       document.getElementById('typ').value = "Karten";
+      document.getElementById('beschreibung').value = "";
+      zeigeKategorieBeschreibung();
+    }
+
+    function getTypClass(typ) {
+      switch (typ.toLowerCase()) {
+        case "karten":    return "type-karten";
+        case "würfel":    return "type-wuerfel";
+        case "brett":     return "type-brett";
+        case "sonstiges": return "type-sonstiges";
+        default:          return "";
+      }
     }
 
     function spiellisteAnzeigen(spieleArr) {
@@ -215,12 +359,13 @@
       }
       spieleArr.forEach((s, index) => {
         div.innerHTML +=
-          `<div class="spiel-card">
+          `<div class="spiel-card ${getTypClass(s.typ)}">
             <div class="spiel-title">${s.name}<span class="spiel-type">${s.typ}</span></div>
             <div class="spiel-details">
               <span>Spieler: ${s.minspieler} - ${s.maxspieler}</span>
               <span>Dauer: ${s.dauer} Min.</span>
             </div>
+            <div class="spiel-description">${s.beschreibung || '-'}</div>
             <div class="btn-group">
               <button class="btn-edit" onclick="spielBearbeiten(${index})">Bearbeiten</button>
               <button class="btn-delete" onclick="spielLoeschen(${index})">Löschen</button>
@@ -243,9 +388,10 @@
       document.getElementById('maxspieler').value = s.maxspieler;
       document.getElementById('dauer').value = s.dauer;
       document.getElementById('typ').value = s.typ;
-
+      document.getElementById('beschreibung').value = s.beschreibung || "";
       aktuellBearbeitenIndex = index;
       document.getElementById('actionButton').textContent = "Spiel aktualisieren";
+      zeigeKategorieBeschreibung();
     }
 
     function listeFiltern() {
@@ -275,9 +421,9 @@
     }
 
     function exportCSV() {
-      let csv = "Spielname,Min. Spieler,Max. Spieler,Dauer,Typ\n";
+      let csv = "Spielname,Min. Spieler,Max. Spieler,Dauer,Typ,Beschreibung\n";
       spiele.forEach(s => {
-        csv += `"${s.name}",${s.minspieler},${s.maxspieler},${s.dauer},"${s.typ}"\n`;
+        csv += `"${s.name}",${s.minspieler},${s.maxspieler},${s.dauer},"${s.typ}","${s.beschreibung || ''}"\n`;
       });
       const blob = new Blob([csv], {type: 'text/csv'});
       const url = window.URL.createObjectURL(blob);
@@ -294,17 +440,18 @@
       const reader = new FileReader();
       reader.onload = function(e) {
         const text = e.target.result;
-        const lines = text.trim().split('\n').slice(1); // Skip header
+        const lines = text.trim().split('\n').slice(1);
         const imported = [];
         lines.forEach(line => {
-          const parts = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g); // split respecting quotes
-          if (parts && parts.length >= 5) {
+          const parts = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+          if (parts && parts.length >= 6) {
             imported.push({
               name: parts[0].replace(/"/g,""),
               minspieler: parseInt(parts[1]),
               maxspieler: parseInt(parts[2]),
               dauer: parseInt(parts[3]),
-              typ: parts[4].replace(/"/g,"")
+              typ: parts[4].replace(/"/g,""),
+              beschreibung: parts[5].replace(/"/g,"")
             });
           }
         });
@@ -312,10 +459,8 @@
         spiellisteAnzeigen(spiele);
       };
       reader.readAsText(file);
-      event.target.value = ""; // clear file input for re-import
+      event.target.value = "";
     }
-
-    spiellisteAnzeigen(spiele);
   </script>
 </body>
 </html>
