@@ -65,6 +65,7 @@
       display: flex;
       flex-direction: column;
       transition: box-shadow .2s;
+      position: relative;
     }
     .spiel-card:hover {
       box-shadow: 0 4px 20px rgba(30,50,100,.11);
@@ -83,6 +84,7 @@
       display: flex;
       gap: 16px;
       flex-wrap: wrap;
+      margin-bottom: 8px;
     }
     .spiel-type {
       background: #ccd7ed;
@@ -92,6 +94,26 @@
       padding: 2.5px 11px;
       font-weight: 500;
       margin-left: 5px;
+    }
+    .btn-group {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-edit, .btn-delete {
+      background: #114488;
+      font-size: 13px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      transition: background .2s;
+    }
+    .btn-delete {
+      background: #b32a2a;
+    }
+    .btn-edit:hover {
+      background: #1566aa;
+    }
+    .btn-delete:hover {
+      background: #a32424;
     }
     @media (max-width: 700px) {
       .container { padding: 18px 4px; }
@@ -109,7 +131,7 @@
 <body>
   <div class="container">
     <h2>Meine Spiele</h2>
-    <div class="form-row">
+    <div class="form-row" id="eingabeForm">
       <input id="name" type="text" placeholder="Spielname">
       <input id="minspieler" type="number" min="1" placeholder="Min. Spieler">
       <input id="maxspieler" type="number" min="1" placeholder="Max. Spieler">
@@ -120,7 +142,7 @@
         <option value="Brett">Brett</option>
         <option value="Sonstiges">Sonstiges</option>
       </select>
-      <button onclick="spielHinzufuegen()">Spiel hinzufügen</button>
+      <button id="actionButton" onclick="spielHinzufuegen()">Spiel hinzufügen</button>
     </div>
 
     <div class="filter">
@@ -150,19 +172,33 @@
 
   <script>
     let spiele = [];
+    let aktuellBearbeitenIndex = null;
 
     function spielHinzufuegen() {
-      const name = document.getElementById('name').value;
+      const name = document.getElementById('name').value.trim();
       const minspieler = parseInt(document.getElementById('minspieler').value);
       const maxspieler = parseInt(document.getElementById('maxspieler').value);
       const dauer = parseInt(document.getElementById('dauer').value);
       const typ = document.getElementById('typ').value;
+
       if (!name || isNaN(minspieler) || isNaN(maxspieler) || isNaN(dauer)) {
         alert('Bitte alle Felder ausfüllen.');
         return;
       }
-      spiele.push({ name, minspieler, maxspieler, dauer, typ });
+
+      if (aktuellBearbeitenIndex === null) {
+        spiele.push({ name, minspieler, maxspieler, dauer, typ });
+      } else {
+        // Bearbeiten
+        spiele[aktuellBearbeitenIndex] = { name, minspieler, maxspieler, dauer, typ };
+        aktuellBearbeitenIndex = null;
+        document.getElementById('actionButton').textContent = "Spiel hinzufügen";
+      }
+      clearForm();
       spiellisteAnzeigen(spiele);
+    }
+
+    function clearForm() {
       document.getElementById('name').value = "";
       document.getElementById('minspieler').value = "";
       document.getElementById('maxspieler').value = "";
@@ -177,7 +213,7 @@
         div.innerHTML = '<em>Keine Spiele eingetragen.</em>';
         return;
       }
-      spieleArr.forEach(s => {
+      spieleArr.forEach((s, index) => {
         div.innerHTML +=
           `<div class="spiel-card">
             <div class="spiel-title">${s.name}<span class="spiel-type">${s.typ}</span></div>
@@ -185,8 +221,31 @@
               <span>Spieler: ${s.minspieler} - ${s.maxspieler}</span>
               <span>Dauer: ${s.dauer} Min.</span>
             </div>
+            <div class="btn-group">
+              <button class="btn-edit" onclick="spielBearbeiten(${index})">Bearbeiten</button>
+              <button class="btn-delete" onclick="spielLoeschen(${index})">Löschen</button>
+            </div>
           </div>`;
       });
+    }
+
+    function spielLoeschen(index) {
+      if (confirm(`Spiel "${spiele[index].name}" wirklich löschen?`)) {
+        spiele.splice(index, 1);
+        spiellisteAnzeigen(spiele);
+      }
+    }
+
+    function spielBearbeiten(index) {
+      const s = spiele[index];
+      document.getElementById('name').value = s.name;
+      document.getElementById('minspieler').value = s.minspieler;
+      document.getElementById('maxspieler').value = s.maxspieler;
+      document.getElementById('dauer').value = s.dauer;
+      document.getElementById('typ').value = s.typ;
+
+      aktuellBearbeitenIndex = index;
+      document.getElementById('actionButton').textContent = "Spiel aktualisieren";
     }
 
     function listeFiltern() {
