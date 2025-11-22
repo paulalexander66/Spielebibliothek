@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Spieleliste</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 40px;
+    }
+    h2 {
+      color: #114488;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+    }
+    .container {
+      max-width: 650px;
+      margin: auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(30,50,70,.07);
+      padding: 24px 32px;
+    }
+    .form-row, .filter, .io-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    input, select, button {
+      padding: 8px 12px;
+      font-size: 15px;
+      border-radius: 8px;
+      border: 1px solid #d0dbe3;
+      outline: none;
+      transition: border-color .2s;
+    }
+    input:focus, select:focus {
+      border-color: #114488;
+    }
+    button {
+      background: #114488;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      transition: background .2s;
+    }
+    button:hover {
+      background: #1566aa;
+    }
+    .spielliste {
+      margin-top: 28px;
+    }
+    .spiel-card {
+      background: linear-gradient(90deg,#e8f0fe 18%,#eaefff 100%);
+      border-radius: 12px;
+      margin-bottom: 16px;
+      padding: 14px 18px;
+      box-shadow: 0 2px 8px rgba(30, 50, 70, .03);
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow .2s;
+    }
+    .spiel-card:hover {
+      box-shadow: 0 4px 20px rgba(30,50,100,.11);
+    }
+    .spiel-title {
+      font-size: 18px;
+      color: #134070;
+      font-weight: 600;
+      margin-bottom: 5px;
+      letter-spacing: 0.5px;
+    }
+    .spiel-details {
+      color: #444;
+      font-size: 14.5px;
+      letter-spacing: 0.2px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .spiel-type {
+      background: #ccd7ed;
+      color: #1d3050;
+      font-size: 13px;
+      border-radius: 7px;
+      padding: 2.5px 11px;
+      font-weight: 500;
+      margin-left: 5px;
+    }
+    @media (max-width: 700px) {
+      .container { padding: 18px 4px; }
+      .form-row, .filter, .io-row { flex-direction: column; gap: 6px; }
+    }
+    .io-row input[type="file"] {
+      background: #f6f6fa;
+      color: #134070;
+      padding: 7px;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Meine Spiele</h2>
+    <div class="form-row">
+      <input id="name" type="text" placeholder="Spielname">
+      <input id="minspieler" type="number" min="1" placeholder="Min. Spieler">
+      <input id="maxspieler" type="number" min="1" placeholder="Max. Spieler">
+      <input id="dauer" type="number" min="1" placeholder="Dauer (Minuten)">
+      <select id="typ">
+        <option value="Karten">Karten</option>
+        <option value="Würfel">Würfel</option>
+        <option value="Brett">Brett</option>
+        <option value="Sonstiges">Sonstiges</option>
+      </select>
+      <button onclick="spielHinzufuegen()">Spiel hinzufügen</button>
+    </div>
+
+    <div class="filter">
+      <label>Filter:</label>
+      <input id="filterMinspieler" type="number" min="1" placeholder="Min. Spieler">
+      <input id="filterMaxspieler" type="number" min="1" placeholder="Max. Spieler">
+      <input id="filterMindauer" type="number" min="1" placeholder="Min. Dauer">
+      <input id="filterMaxdauer" type="number" min="1" placeholder="Max. Dauer">
+      <select id="filterTyp">
+        <option value="">alle Typen</option>
+        <option value="Karten">Karten</option>
+        <option value="Würfel">Würfel</option>
+        <option value="Brett">Brett</option>
+        <option value="Sonstiges">Sonstiges</option>
+      </select>
+      <button onclick="listeFiltern()">Filtern</button>
+      <button onclick="resetFilter()">Zurücksetzen</button>
+    </div>
+
+    <div class="io-row">
+      <button onclick="exportCSV()">Liste als CSV exportieren</button>
+      <input type="file" id="csvImport" accept=".csv" onchange="importCSV(event)">
+    </div>
+
+    <div class="spielliste" id="spielliste"></div>
+  </div>
+
+  <script>
+    let spiele = [];
+
+    function spielHinzufuegen() {
+      const name = document.getElementById('name').value;
+      const minspieler = parseInt(document.getElementById('minspieler').value);
+      const maxspieler = parseInt(document.getElementById('maxspieler').value);
+      const dauer = parseInt(document.getElementById('dauer').value);
+      const typ = document.getElementById('typ').value;
+      if (!name || isNaN(minspieler) || isNaN(maxspieler) || isNaN(dauer)) {
+        alert('Bitte alle Felder ausfüllen.');
+        return;
+      }
+      spiele.push({ name, minspieler, maxspieler, dauer, typ });
+      spiellisteAnzeigen(spiele);
+      document.getElementById('name').value = "";
+      document.getElementById('minspieler').value = "";
+      document.getElementById('maxspieler').value = "";
+      document.getElementById('dauer').value = "";
+      document.getElementById('typ').value = "Karten";
+    }
+
+    function spiellisteAnzeigen(spieleArr) {
+      const div = document.getElementById('spielliste');
+      div.innerHTML = '';
+      if (spieleArr.length === 0) {
+        div.innerHTML = '<em>Keine Spiele eingetragen.</em>';
+        return;
+      }
+      spieleArr.forEach(s => {
+        div.innerHTML +=
+          `<div class="spiel-card">
+            <div class="spiel-title">${s.name}<span class="spiel-type">${s.typ}</span></div>
+            <div class="spiel-details">
+              <span>Spieler: ${s.minspieler} - ${s.maxspieler}</span>
+              <span>Dauer: ${s.dauer} Min.</span>
+            </div>
+          </div>`;
+      });
+    }
+
+    function listeFiltern() {
+      let minS = parseInt(document.getElementById('filterMinspieler').value) || 1;
+      let maxS = parseInt(document.getElementById('filterMaxspieler').value) || Infinity;
+      let minD = parseInt(document.getElementById('filterMindauer').value) || 0;
+      let maxD = parseInt(document.getElementById('filterMaxdauer').value) || Infinity;
+      let typF = document.getElementById('filterTyp').value;
+
+      let gefiltert = spiele.filter(s =>
+        s.minspieler >= minS &&
+        s.maxspieler <= maxS &&
+        s.dauer >= minD &&
+        s.dauer <= maxD &&
+        (typF === "" || s.typ === typF)
+      );
+      spiellisteAnzeigen(gefiltert);
+    }
+
+    function resetFilter() {
+      document.getElementById('filterMinspieler').value = "";
+      document.getElementById('filterMaxspieler').value = "";
+      document.getElementById('filterMindauer').value = "";
+      document.getElementById('filterMaxdauer').value = "";
+      document.getElementById('filterTyp').value = "";
+      spiellisteAnzeigen(spiele);
+    }
+
+    function exportCSV() {
+      let csv = "Spielname,Min. Spieler,Max. Spieler,Dauer,Typ\n";
+      spiele.forEach(s => {
+        csv += `"${s.name}",${s.minspieler},${s.maxspieler},${s.dauer},"${s.typ}"\n`;
+      });
+      const blob = new Blob([csv], {type: 'text/csv'});
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'spieleliste.csv';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    }
+
+    function importCSV(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const text = e.target.result;
+        const lines = text.trim().split('\n').slice(1); // Skip header
+        const imported = [];
+        lines.forEach(line => {
+          const parts = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g); // split respecting quotes
+          if (parts && parts.length >= 5) {
+            imported.push({
+              name: parts[0].replace(/"/g,""),
+              minspieler: parseInt(parts[1]),
+              maxspieler: parseInt(parts[2]),
+              dauer: parseInt(parts[3]),
+              typ: parts[4].replace(/"/g,"")
+            });
+          }
+        });
+        spiele = imported;
+        spiellisteAnzeigen(spiele);
+      };
+      reader.readAsText(file);
+      event.target.value = ""; // clear file input for re-import
+    }
+
+    spiellisteAnzeigen(spiele);
+  </script>
+</body>
+</html>
