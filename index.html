@@ -4,187 +4,47 @@
   <meta charset="UTF-8">
   <title>Spieleliste</title>
   <style>
-    body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: #f4f6f8;
-      margin: 0;
-      padding: 40px;
-    }
-    h2 {
-      color: #114488;
-      margin-bottom: 12px;
-      letter-spacing: 1px;
-    }
-    .container {
-      max-width: 650px;
-      margin: auto;
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 4px 16px rgba(30,50,70,.07);
-      padding: 24px 32px;
-    }
-    .form-row, .filter, .io-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
-      margin-bottom: 18px;
-    }
-    input, select, button, textarea {
-      padding: 8px 12px;
-      font-size: 15px;
-      border-radius: 8px;
-      border: 1px solid #d0dbe3;
-      outline: none;
-      transition: border-color .2s;
-    }
-    input:focus, select:focus, textarea:focus {
-      border-color: #114488;
-    }
-    textarea {
-      min-width: 220px;
-      width: 280px;
-      min-height: 54px;
-      max-width: 360px;
-      resize: vertical;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      margin-top: 4px;
-      margin-bottom: 4px;
-    }
-    button {
-      background: #114488;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      letter-spacing: 0.6px;
-      transition: background .2s;
-    }
-    button:hover {
-      background: #1566aa;
-    }
-    .spielliste {
-      margin-top: 28px;
-    }
-    .spiel-card {
-      border-radius: 12px;
-      margin-bottom: 18px;
-      padding: 14px 20px 18px 20px;
-      box-shadow: 0 2px 8px rgba(30, 50, 70, .03);
-      display: flex;
-      flex-direction: column;
-      transition: box-shadow .2s;
-      position: relative;
-      background: #fff;
-      border: 2px solid #f0f0f0;
-    }
-    .spiel-card.type-karten {
-      background: linear-gradient(90deg,#fce4ec 40%,#f8bbd0 100%);
-      border-color: #f8bbd0;
-    }
-    .spiel-card.type-wuerfel {
-      background: linear-gradient(90deg,#e3f2fd 40%,#90caf9 100%);
-      border-color: #90caf9;
-    }
-    .spiel-card.type-brett {
-      background: linear-gradient(90deg,#e8f5e9 40%,#a5d6a7 100%);
-      border-color: #a5d6a7;
-    }
-    .spiel-card.type-sonstiges {
-      background: linear-gradient(90deg,#fff3e0 40%,#ffcc80 100%);
-      border-color: #ffcc80;
-    }
-    .spiel-card:hover {
-      box-shadow: 0 4px 20px rgba(30,50,100,.12);
-    }
-    .spiel-title {
-      font-size: 19px;
-      color: #134070;
-      font-weight: 600;
-      margin-bottom: 4px;
-      letter-spacing: 0.5px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .spiel-type {
-      font-size: 13px;
-      border-radius: 7px;
-      padding: 2.5px 11px;
-      font-weight: 500;
-      margin-left: 5px;
-      transition: background 0.2s, color 0.2s;
-      display: inline-block;
-      background: #ccd7ed;
-      color: #1d3050;
-    }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f8; margin: 0; padding: 40px; }
+    h2 { color: #114488; margin-bottom: 12px; letter-spacing: 1px; }
+    .container { max-width: 650px; margin: auto; background: #fff; border-radius: 16px; box-shadow: 0 4px 16px rgba(30,50,70,.07); padding: 24px 32px; }
+    .form-row, .filter, .io-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 18px; }
+    input, select, button, textarea { padding: 8px 12px; font-size: 15px; border-radius: 8px; border: 1px solid #d0dbe3; outline: none; transition: border-color .2s; }
+    input:focus, select:focus, textarea:focus { border-color: #114488; }
+    textarea { min-width: 220px; width: 280px; min-height: 54px; max-width: 360px; resize: vertical; font-family: 'Segoe UI', Arial, sans-serif; margin-top: 4px; margin-bottom: 4px; }
+    .spiel-link-input { min-width: 200px; max-width: 350px; font-size: 15px; }
+    button { background: #114488; color: #fff; border: none; cursor: pointer; font-weight: 600; letter-spacing: 0.6px; transition: background .2s; }
+    button:hover { background: #1566aa; }
+    .spielliste { margin-top: 28px; }
+    .spiel-card { border-radius: 12px; margin-bottom: 18px; padding: 14px 20px 18px 20px; box-shadow: 0 2px 8px rgba(30, 50, 70, .03); display: flex; flex-direction: column; transition: box-shadow .2s; position: relative; background: #fff; border: 2px solid #f0f0f0; }
+    .spiel-card.type-karten { background: linear-gradient(90deg,#fce4ec 40%,#f8bbd0 100%); border-color: #f8bbd0; }
+    .spiel-card.type-wuerfel { background: linear-gradient(90deg,#e3f2fd 40%,#90caf9 100%); border-color: #90caf9; }
+    .spiel-card.type-brett { background: linear-gradient(90deg,#e8f5e9 40%,#a5d6a7 100%); border-color: #a5d6a7; }
+    .spiel-card.type-sonstiges { background: linear-gradient(90deg,#fff3e0 40%,#ffcc80 100%); border-color: #ffcc80; }
+    .spiel-card:hover { box-shadow: 0 4px 20px rgba(30,50,100,.12); }
+    .spiel-title { font-size: 19px; color: #134070; font-weight: 600; margin-bottom: 4px; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
+    .spiel-type { font-size: 13px; border-radius: 7px; padding: 2.5px 11px; font-weight: 500; margin-left: 5px; transition: background 0.2s, color 0.2s; display: inline-block; background: #ccd7ed; color: #1d3050; }
     .type-karten    .spiel-type { background: #f8bbd0; color: #ad1457; }
     .type-wuerfel   .spiel-type { background: #90caf9; color: #1976d2; }
     .type-brett     .spiel-type { background: #a5d6a7; color: #388e3c; }
     .type-sonstiges .spiel-type { background: #ffcc80; color: #f57c00; }
-    .spiel-details {
-      color: #444;
-      font-size: 14.5px;
-      letter-spacing: 0.2px;
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
-    }
-    .spiel-description {
-      font-size: 15px;
-      color: #203040;
-      background: #f3f5fb;
-      border-radius: 8px;
-      border-left: 5px solid #ccd7ed;
-      padding: 10px 18px;
-      margin: 8px 0 0 0;
-      box-shadow: 0 1px 4px rgba(80,90,130,.10);
-      white-space: pre-line;
-      line-height: 1.5;
-      font-family: 'Segoe UI', Arial, sans-serif;
-    }
-    .category-info {
-      font-size: 13px;
-      color: #555;
-      margin-left: 6px;
-      font-style: italic;
-      flex: 1 0 100%;
-    }
-    .btn-group {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-    }
-    .btn-edit, .btn-delete {
-      background: #114488;
-      font-size: 13px;
-      padding: 5px 10px;
-      border-radius: 6px;
-      transition: background .2s;
-    }
-    .btn-delete {
-      background: #b32a2a;
-    }
-    .btn-edit:hover {
-      background: #1566aa;
-    }
-    .btn-delete:hover {
-      background: #a32424;
-    }
+    .spiel-details { color: #444; font-size: 14.5px; letter-spacing: 0.2px; display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; }
+    .spiel-description { font-size: 15px; color: #203040; background: #f3f5fb; border-radius: 8px; border-left: 5px solid #ccd7ed; padding: 10px 18px; margin: 8px 0 0 0; box-shadow: 0 1px 4px rgba(80,90,130,.10); white-space: pre-line; line-height: 1.5; font-family: 'Segoe UI', Arial, sans-serif; }
+    .spiel-link { margin-top: 7px; margin-bottom: 2px; }
+    .spiel-link a { color: #1566aa; background: #edf6fd; border-radius: 8px; padding: 5px 9px; text-decoration: none; font-weight: 500; font-size: 14px; box-shadow: 0 0 1px #39a7eb; transition: background 0.2s, color 0.2s; margin-right: 10px; }
+    .spiel-link a:hover { background: #1566aa; color: #fff; }
+    .category-info { font-size: 13px; color: #555; margin-left: 6px; font-style: italic; flex: 1 0 100%; }
+    .btn-group { display: flex; gap: 8px; margin-top: 10px; }
+    .btn-edit, .btn-delete { background: #114488; font-size: 13px; padding: 5px 10px; border-radius: 6px; transition: background .2s; }
+    .btn-delete { background: #b32a2a; }
+    .btn-edit:hover { background: #1566aa; }
+    .btn-delete:hover { background: #a32424; }
     @media (max-width: 700px) {
       .container { padding: 18px 4px; }
       .form-row, .filter, .io-row { flex-direction: column; gap: 6px; }
       .spiel-description { max-width: 100%; }
       textarea { width: 95%; min-width: 120px; }
     }
-    .io-row input[type="file"] {
-      background: #f6f6fa;
-      color: #134070;
-      padding: 7px;
-      border-radius: 8px;
-      font-size: 13px;
-    }
+    .io-row input[type="file"] { background: #f6f6fa; color: #134070; padding: 7px; border-radius: 8px; font-size: 13px; }
   </style>
 </head>
 <body>
@@ -203,6 +63,7 @@
       </select>
       <span id="categoryDesc" class="category-info"></span>
       <textarea id="beschreibung" placeholder="Spielbeschreibung"></textarea>
+      <input id="spiellink" type="url" class="spiel-link-input" placeholder="Link zum Spiel (z.B. Wikipedia)">
       <button id="actionButton" onclick="spielHinzufuegen()">Spiel hinzufügen</button>
     </div>
     <div class="filter">
@@ -238,43 +99,44 @@
       "Sonstiges": "Alles, was nicht passt: Partyspiele, Denkspiele oder besondere Varianten."
     };
 
-    const defaultCSV = `Spielname,Min. Spieler,Max. Spieler,Dauer,Typ,Beschreibung
-"Schweinerei",1,30,15,"Würfel","Schweinchen werden geworfen, je nach Lage Punkte."
-"Catan",3,6,75,"Brett","Handels- und Strategiespiel mit Siedeln und Würfeln."
-"Risiko",2,5,60,"Brett","Welteroberung per Würfel und Strategie."
-"Monopoly",2,6,60,"Brett","Kauf und Verkauf von Straßen, Ziel: Monopol."
-"Scrabble",2,4,45,"Brett","Wörter legen auf Feldern, Punkte je Buchstabe."
-"Würfelpoker",1,30,15,"Würfel","Mit fünf Würfeln möglichst hohe Poker-Kombis werfen."
-"Zug um Zug",2,5,60,"Brett","Strecken bauen durch Karten, große Züge gewinnen."
-"Zooloretto",2,5,45,"Brett","Tiere mit Plättchen sammeln und in Gehege unterbringen."
-"Ubongo",2,4,25,"Brett","Geschicklichkeitspuzzle mit Einzelteilen."
-"Calavera",2,4,20,"Karten","Würfeleinträge in Totenkopf-Tabellen, Glück und Taktik."
-"Codenames",4,8,15,"Sonstiges","Begriffe erraten und Hinweise geben im Team."
-"Rumikub",2,4,20,"Sonstiges","Zahlensteine clever kombinieren und anlegen."
-"Activity",3,16,60,"Brett","Pantomime, Malen und Erklären, möglichst vielseitig."
-"Stratego",2,2,45,"Brett","Taktisches Kampfspiel um Flaggen und Ränge."
-"Exploding Cittens",2,5,15,"Karten","Knallige Karten und Glück – keine explodieren!"
-"Bang",4,7,30,"Karten","Wilder Westen mit Rollen, Karten und Schüssen."
-"Munchkin",3,6,80,"Karten","Humorvolles Rollenspiel mit Karten und Fallen."
-"Jenga",1,30,15,"Sonstiges","Stapelspiel mit Holzsteinen – wer lässt es kippen?"
-"Smart10",2,8,20,"Sonstiges","Quizspiel mit Fragen aus allen Wissensbereichen."
-"Wer bin ich",2,6,30,"Sonstiges","Rate wer du bist durch Fragen und Hinweise."
-"Trivial Pursuit",2,36,60,"Brett","Klassisches Quiz mit sechs Wissenskategorien."
-"Dixit",3,6,30,"Brett","Assoziative Bildkarten, Fantasie und Erzählungen."
-"Hitstar Bingo",2,12,30,"Karten","Musikbingo – erkenne Songs und streiche Felder."
-"Hitstar",2,10,30,"Karten","Musikratespiel – Songtitel durch Hinweise erraten."
-"What do you Meme",3,20,30,"Karten","Lustige Meme-Bilder mit passenden Texten kombinieren."
-"Arschlochkind",3,6,60,"Karten","Kartenspiel – Reihenfolge und Rollen nach Punkten."
-"11 Raus",2,6,20,"Karten","Zahlenkarten ablegen und als Erster fertig werden."
-"Karawanen",1,4,60,"Karten","Taktikspiel mit Karawagen-Bewegungen und Zahlen."
-"Wizzard",3,6,45,"Karten","Vorhersagen, Karten klug ausspielen und punkten."
-"Werwolf",8,18,30,"Karten","Diskussionsspiel, Wer ist der Werwolf?"
-"Uno",2,10,15,"Karten","Beliebtes Familien-Kartenspiel, Farben & Zahlen."
-"Uno Flip",2,10,15,"Karten","UNO mit beidseitigen Karten und mehr Action."
-"Uno Würfel",2,4,15,"Würfel","UNO-Würfelvariante – schnell würfeln und ablegen."
-"The Mind",2,4,20,"Karten","Gemeinsam Reihen legen, ohne zu sprechen."
-"Arschmellow",2,6,45,"Karten","Kartenspiel – grober Humor, besondere Regeln."
-"Schiffe Versenken",2,2,15,"Sonstiges","Flotten platzieren und abwechselnd beschießen."`;
+    // Alle Spiele mit vollständigen Links!
+    const defaultCSV = `Spielname,Min. Spieler,Max. Spieler,Dauer,Typ,Beschreibung,Link
+"Schweinerei",1,30,15,"Würfel","Schweinchen werden geworfen, je nach Lage Punkte.","https://de.wikipedia.org/wiki/Schweinerei_(Spiel)"
+"Catan",3,6,75,"Brett","Handels- und Strategiespiel mit Siedeln und Würfeln.","https://de.wikipedia.org/wiki/Die_Siedler_von_Catan"
+"Risiko",2,5,60,"Brett","Welteroberung per Würfel und Strategie.","https://de.wikipedia.org/wiki/Risiko_(Spiel)"
+"Monopoly",2,6,60,"Brett","Kauf und Verkauf von Straßen, Ziel: Monopol.","https://de.wikipedia.org/wiki/Monopoly"
+"Scrabble",2,4,45,"Brett","Wörter legen auf Feldern, Punkte je Buchstabe.","https://de.wikipedia.org/wiki/Scrabble"
+"Würfelpoker",1,30,15,"Würfel","Mit fünf Würfeln möglichst hohe Poker-Kombis werfen.","https://www.spielwiki.de/W%C3%BCrfelpoker"
+"Zug um Zug",2,5,60,"Brett","Strecken bauen durch Karten, große Züge gewinnen.","https://de.wikipedia.org/wiki/Zug_um_Zug"
+"Zooloretto",2,5,45,"Brett","Tiere mit Plättchen sammeln und in Gehege unterbringen.","https://de.wikipedia.org/wiki/Zooloretto"
+"Ubongo",2,4,25,"Brett","Geschicklichkeitspuzzle mit Einzelteilen.","https://de.wikipedia.org/wiki/Ubongo"
+"Calavera",2,4,20,"Karten","Würfeleinträge in Totenkopf-Tabellen, Glück und Taktik.","https://boardgamegeek.com/boardgame/250372/calavera"
+"Codenames",4,8,15,"Sonstiges","Begriffe erraten und Hinweise geben im Team.","https://de.wikipedia.org/wiki/Codenames"
+"Rumikub",2,4,20,"Sonstiges","Zahlensteine clever kombinieren und anlegen.","https://de.wikipedia.org/wiki/Rummikub"
+"Activity",3,16,60,"Brett","Pantomime, Malen und Erklären, möglichst vielseitig.","https://de.wikipedia.org/wiki/Activity_(Spiel)"
+"Stratego",2,2,45,"Brett","Taktisches Kampfspiel um Flaggen und Ränge.","https://de.wikipedia.org/wiki/Stratego"
+"Exploding Cittens",2,5,15,"Karten","Knallige Karten und Glück – keine explodieren!","https://www.explodingkittens.com/"
+"Bang",4,7,30,"Karten","Wilder Westen mit Rollen, Karten und Schüssen.","https://de.wikipedia.org/wiki/Bang!"
+"Munchkin",3,6,80,"Karten","Humorvolles Rollenspiel mit Karten und Fallen.","https://munchkin.game/"
+"Jenga",1,30,15,"Sonstiges","Stapelspiel mit Holzsteinen – wer lässt es kippen?","https://en.wikipedia.org/wiki/Jenga"
+"Smart10",2,8,20,"Sonstiges","Quizspiel mit Fragen aus allen Wissensbereichen.","https://boardgamegeek.com/boardgame/235451/smart-10"
+"Wer bin ich",2,6,30,"Sonstiges","Rate wer du bist durch Fragen und Hinweise.","https://de.wikipedia.org/wiki/Wer_bin_ich%3F"
+"Trivial Pursuit",2,36,60,"Brett","Klassisches Quiz mit sechs Wissenskategorien.","https://de.wikipedia.org/wiki/Trivial_Pursuit"
+"Dixit",3,6,30,"Brett","Assoziative Bildkarten, Fantasie und Erzählungen.","https://de.wikipedia.org/wiki/Dixit"
+"Hitstar Bingo",2,12,30,"Karten","Musikbingo – erkenne Songs und streiche Felder.","https://www.hitstar.de/"
+"Hitstar",2,10,30,"Karten","Musikratespiel – Songtitel durch Hinweise erraten.","https://www.hitstar.de/"
+"What do you Meme",3,20,30,"Karten","Lustige Meme-Bilder mit passenden Texten kombinieren.","https://www.whatdoyoumeme.com/"
+"Arschlochkind",3,6,60,"Karten","Kartenspiel – Reihenfolge und Rollen nach Punkten.","https://www.arschlochkind.com/"
+"11 Raus",2,6,20,"Karten","Zahlenkarten ablegen und als Erster fertig werden.","https://boardgamegeek.com/boardgame/20846/11-raus"
+"Karawanen",1,4,60,"Karten","Taktikspiel mit Karawagen-Bewegungen und Zahlen.","https://www.spiele-check.de/1415_Karawane.html"
+"Wizzard",3,6,45,"Karten","Vorhersagen, Karten klug ausspielen und punkten.","https://de.wikipedia.org/wiki/Wizard_(Spiel)"
+"Werwolf",8,18,30,"Karten","Diskussionsspiel, Wer ist der Werwolf?","https://de.wikipedia.org/wiki/Die_Werw%C3%B6lfe_vom_D%C3%BCsterwald"
+"Uno",2,10,15,"Karten","Beliebtes Familien-Kartenspiel, Farben & Zahlen.","https://www.unorules.com/"
+"Uno Flip",2,10,15,"Karten","UNO mit beidseitigen Karten und mehr Action.","https://www.unorules.com/uno-flip-rules/"
+"Uno Würfel",2,4,15,"Würfel","UNO-Würfelvariante – schnell würfeln und ablegen.","https://boardgamegeek.com/boardgame/34219/uno-dice-game"
+"The Mind",2,4,20,"Karten","Gemeinsam Reihen legen, ohne zu sprechen.","https://boardgamegeek.com/boardgame/244992/the-mind"
+"Arschmellow",2,6,45,"Karten","Kartenspiel – grober Humor, besondere Regeln.","https://arschmellow.de/"
+"Schiffe Versenken",2,2,15,"Sonstiges","Flotten platzieren und abwechselnd beschießen.","https://de.wikipedia.org/wiki/Schiffe_versenken"`;
 
     function zeigeKategorieBeschreibung() {
       const typ = document.getElementById('typ').value;
@@ -291,14 +153,15 @@
       const imported = [];
       lines.forEach(line => {
         const parts = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-        if (parts && parts.length >= 6) {
+        if (parts && parts.length >= 7) {
           imported.push({
             name: parts[0].replace(/"/g,""),
             minspieler: parseInt(parts[1]),
             maxspieler: parseInt(parts[2]),
             dauer: parseInt(parts[3]),
             typ: parts[4].replace(/"/g,""),
-            beschreibung: parts[5].replace(/"/g,"")
+            beschreibung: parts[5].replace(/"/g,""),
+            link: parts[6] ? parts[6].replace(/"/g,"") : ""
           });
         }
       });
@@ -313,6 +176,7 @@
       const dauer = parseInt(document.getElementById('dauer').value);
       const typ = document.getElementById('typ').value;
       const beschreibung = document.getElementById('beschreibung').value.trim();
+      const link = document.getElementById('spiellink').value.trim();
 
       if (!name || isNaN(minspieler) || isNaN(maxspieler) || isNaN(dauer) || !beschreibung) {
         alert('Bitte alle Felder inkl. Beschreibung ausfüllen.');
@@ -320,9 +184,9 @@
       }
 
       if (aktuellBearbeitenIndex === null) {
-        spiele.push({ name, minspieler, maxspieler, dauer, typ, beschreibung });
+        spiele.push({ name, minspieler, maxspieler, dauer, typ, beschreibung, link });
       } else {
-        spiele[aktuellBearbeitenIndex] = { name, minspieler, maxspieler, dauer, typ, beschreibung };
+        spiele[aktuellBearbeitenIndex] = { name, minspieler, maxspieler, dauer, typ, beschreibung, link };
         aktuellBearbeitenIndex = null;
         document.getElementById('actionButton').textContent = "Spiel hinzufügen";
       }
@@ -337,6 +201,7 @@
       document.getElementById('dauer').value = "";
       document.getElementById('typ').value = "Karten";
       document.getElementById('beschreibung').value = "";
+      document.getElementById('spiellink').value = "";
       zeigeKategorieBeschreibung();
     }
 
@@ -360,12 +225,18 @@
       spieleArr.forEach((s, index) => {
         div.innerHTML +=
           `<div class="spiel-card ${getTypClass(s.typ)}">
-            <div class="spiel-title">${s.name}<span class="spiel-type">${s.typ}</span></div>
+            <div class="spiel-title">
+              ${s.name}
+              <span class="spiel-type">${s.typ}</span>
+            </div>
             <div class="spiel-details">
               <span>Spieler: ${s.minspieler} - ${s.maxspieler}</span>
               <span>Dauer: ${s.dauer} Min.</span>
             </div>
             <div class="spiel-description">${s.beschreibung || '-'}</div>
+            <div class="spiel-link">
+              <a href="${s.link}" target="_blank" rel="noopener">Spiel-Link öffnen</a>
+            </div>
             <div class="btn-group">
               <button class="btn-edit" onclick="spielBearbeiten(${index})">Bearbeiten</button>
               <button class="btn-delete" onclick="spielLoeschen(${index})">Löschen</button>
@@ -389,41 +260,16 @@
       document.getElementById('dauer').value = s.dauer;
       document.getElementById('typ').value = s.typ;
       document.getElementById('beschreibung').value = s.beschreibung || "";
+      document.getElementById('spiellink').value = s.link || "";
       aktuellBearbeitenIndex = index;
       document.getElementById('actionButton').textContent = "Spiel aktualisieren";
       zeigeKategorieBeschreibung();
     }
 
-    function listeFiltern() {
-      let minS = parseInt(document.getElementById('filterMinspieler').value) || 1;
-      let maxS = parseInt(document.getElementById('filterMaxspieler').value) || Infinity;
-      let minD = parseInt(document.getElementById('filterMindauer').value) || 0;
-      let maxD = parseInt(document.getElementById('filterMaxdauer').value) || Infinity;
-      let typF = document.getElementById('filterTyp').value;
-
-      let gefiltert = spiele.filter(s =>
-        s.minspieler >= minS &&
-        s.maxspieler <= maxS &&
-        s.dauer >= minD &&
-        s.dauer <= maxD &&
-        (typF === "" || s.typ === typF)
-      );
-      spiellisteAnzeigen(gefiltert);
-    }
-
-    function resetFilter() {
-      document.getElementById('filterMinspieler').value = "";
-      document.getElementById('filterMaxspieler').value = "";
-      document.getElementById('filterMindauer').value = "";
-      document.getElementById('filterMaxdauer').value = "";
-      document.getElementById('filterTyp').value = "";
-      spiellisteAnzeigen(spiele);
-    }
-
     function exportCSV() {
-      let csv = "Spielname,Min. Spieler,Max. Spieler,Dauer,Typ,Beschreibung\n";
+      let csv = "Spielname,Min. Spieler,Max. Spieler,Dauer,Typ,Beschreibung,Link\n";
       spiele.forEach(s => {
-        csv += `"${s.name}",${s.minspieler},${s.maxspieler},${s.dauer},"${s.typ}","${s.beschreibung || ''}"\n`;
+        csv += `"${s.name}",${s.minspieler},${s.maxspieler},${s.dauer},"${s.typ}","${s.beschreibung || ''}","${s.link || ''}"\n`;
       });
       const blob = new Blob([csv], {type: 'text/csv'});
       const url = window.URL.createObjectURL(blob);
@@ -444,14 +290,15 @@
         const imported = [];
         lines.forEach(line => {
           const parts = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-          if (parts && parts.length >= 6) {
+          if (parts && parts.length >= 7) {
             imported.push({
               name: parts[0].replace(/"/g,""),
               minspieler: parseInt(parts[1]),
               maxspieler: parseInt(parts[2]),
               dauer: parseInt(parts[3]),
               typ: parts[4].replace(/"/g,""),
-              beschreibung: parts[5].replace(/"/g,"")
+              beschreibung: parts[5].replace(/"/g,""),
+              link: parts[6] ? parts[6].replace(/"/g,"") : ""
             });
           }
         });
